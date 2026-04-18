@@ -18,23 +18,57 @@
   --purple-bg:#fdf4ff;--purple-border:#e9d5ff;--purple-text:#7e22ce;
   --radius:8px;--radius-lg:12px;
 }
-@media(prefers-color-scheme:dark){
-  :root{
-    --bg:#0c0c0b;--surface:#161615;--border:#2a2a28;--border-light:#1f1f1d;
-    --text:#f0f0ee;--muted:#888885;--hint:#555552;
-    --green-bg:#052e16;--green-border:#166534;--green-text:#86efac;
-    --amber-bg:#1c1400;--amber-border:#92400e;--amber-text:#fcd34d;
-    --red-bg:#1c0a0a;--red-border:#991b1b;--red-text:#fca5a5;
-    --blue-bg:#0c1a2e;--blue-border:#1e3a5f;--blue-text:#93c5fd;
-    --purple-bg:#1a0b2e;--purple-border:#5b21b6;--purple-text:#d8b4fe;
-  }
-}
+@media(prefers-color-scheme:dark){:root{
+  --bg:#0c0c0b;--surface:#161615;--border:#2a2a28;--border-light:#1f1f1d;
+  --text:#f0f0ee;--muted:#888885;--hint:#555552;
+  --green-bg:#052e16;--green-border:#166534;--green-text:#86efac;
+  --amber-bg:#1c1400;--amber-border:#92400e;--amber-text:#fcd34d;
+  --red-bg:#1c0a0a;--red-border:#991b1b;--red-text:#fca5a5;
+  --blue-bg:#0c1a2e;--blue-border:#1e3a5f;--blue-text:#93c5fd;
+  --purple-bg:#1a0b2e;--purple-border:#5b21b6;--purple-text:#d8b4fe;
+}}
 body{font-family:'Geist',-apple-system,sans-serif;background:var(--bg);color:var(--text);min-height:100vh;line-height:1.5;font-size:14px}
-.page{max-width:760px;margin:0 auto;padding:48px 24px 80px}
-.page-header{margin-bottom:40px;padding-bottom:24px;border-bottom:1px solid var(--border)}
+
+/* setup overlay */
+.setup-overlay{position:fixed;inset:0;background:var(--bg);z-index:200;display:flex;align-items:center;justify-content:center;padding:24px}
+.setup-overlay.hidden{display:none}
+.setup-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-lg);padding:32px;max-width:480px;width:100%}
+.setup-card h2{font-size:18px;font-weight:500;letter-spacing:-0.02em;margin-bottom:6px}
+.setup-card p{font-size:13px;color:var(--muted);line-height:1.6;margin-bottom:24px}
+.setup-field{display:flex;flex-direction:column;gap:5px;margin-bottom:14px}
+.setup-field label{font-size:11px;color:var(--hint);font-family:'Geist Mono',monospace;text-transform:uppercase;letter-spacing:0.06em}
+.setup-field input{font-size:13px;font-family:'Geist Mono',monospace;background:var(--bg);border:1px solid var(--border);border-radius:var(--radius);color:var(--text);padding:8px 10px;outline:none;transition:border-color 0.15s;width:100%}
+.setup-field input:focus{border-color:var(--muted)}
+.setup-field input::placeholder{color:var(--hint)}
+.setup-field .hint{font-size:11px;color:var(--hint);line-height:1.5}
+.setup-field .hint a{color:var(--blue-text)}
+.setup-actions{display:flex;gap:8px;margin-top:20px;align-items:center}
+.btn-primary{font-size:13px;font-family:inherit;background:var(--text);color:var(--bg);border:none;border-radius:var(--radius);padding:9px 18px;cursor:pointer;font-weight:500;transition:opacity 0.15s}
+.btn-primary:hover{opacity:0.85}.btn-primary:disabled{opacity:0.4;cursor:not-allowed}
+.btn-ghost{font-size:13px;font-family:inherit;background:transparent;color:var(--muted);border:1px solid var(--border);border-radius:var(--radius);padding:8px 14px;cursor:pointer;transition:all 0.15s}
+.btn-ghost:hover{color:var(--text);border-color:var(--muted)}
+.setup-error{font-size:12px;color:var(--red-text);margin-top:10px;display:none}
+.setup-error.show{display:block}
+
+/* sync status bar */
+.sync-bar{display:flex;align-items:center;justify-content:space-between;padding:8px 0;margin-bottom:20px}
+.sync-status{display:flex;align-items:center;gap:7px;font-size:12px;font-family:'Geist Mono',monospace;color:var(--hint)}
+.sync-dot{width:7px;height:7px;border-radius:50%;background:var(--hint);flex-shrink:0;transition:background 0.2s}
+.sync-dot.saving{background:var(--amber-text)}
+.sync-dot.saved{background:var(--green-text)}
+.sync-dot.error{background:var(--red-text)}
+.sync-dot.offline{background:var(--hint)}
+.sync-repo{font-size:11px;color:var(--hint);font-family:'Geist Mono',monospace;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;max-width:220px}
+.sync-actions{display:flex;gap:6px}
+.sync-btn{font-size:11px;font-family:'Geist Mono',monospace;background:transparent;border:1px solid var(--border);border-radius:var(--radius);color:var(--muted);cursor:pointer;padding:4px 10px;transition:all 0.1s;white-space:nowrap}
+.sync-btn:hover{background:var(--border-light);color:var(--text);border-color:var(--muted)}
+
+/* page */
+.page{max-width:760px;margin:0 auto;padding:40px 24px 80px}
+.page-header{margin-bottom:32px;padding-bottom:20px;border-bottom:1px solid var(--border)}
 .page-header h1{font-size:22px;font-weight:500;letter-spacing:-0.02em;margin-bottom:4px}
 .page-header p{font-size:13px;color:var(--muted)}
-.summary-bar{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-bottom:32px}
+.summary-bar{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-bottom:28px}
 .stat{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:14px 16px}
 .stat-label{font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:0.06em;margin-bottom:6px;font-family:'Geist Mono',monospace}
 .stat-value{font-size:22px;font-weight:500;letter-spacing:-0.02em;font-variant-numeric:tabular-nums}
@@ -55,7 +89,7 @@ body{font-family:'Geist',-apple-system,sans-serif;background:var(--bg);color:var
 .deadline-text.urgent{color:var(--amber-text)}.deadline-text.overdue{color:var(--red-text)}.deadline-text.done{color:var(--green-text)}
 .progress-wrap{display:flex;align-items:center;gap:8px;flex:1}
 .progress-bar{height:4px;background:var(--border);border-radius:2px;overflow:hidden;flex:1;min-width:80px}
-.progress-fill{height:100%;background:var(--text);border-radius:2px;transition:width 0.3s ease}
+.progress-fill{height:100%;background:var(--text);border-radius:2px;transition:width 0.3s}
 .goal-card.complete .progress-fill{background:var(--green-text)}.goal-card.overdue .progress-fill{background:var(--red-text)}
 .progress-pct{font-size:11px;color:var(--muted);font-family:'Geist Mono',monospace;min-width:28px;text-align:right}
 .goal-actions{display:flex;align-items:center;gap:4px;flex-shrink:0}
@@ -107,7 +141,7 @@ body{font-family:'Geist',-apple-system,sans-serif;background:var(--bg);color:var
 .detail-group-label{font-size:11px;color:var(--hint);font-family:'Geist Mono',monospace;text-transform:uppercase;letter-spacing:0.06em}
 .detail-textarea{font-size:13px;font-family:inherit;background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);color:var(--text);padding:8px 10px;resize:vertical;outline:none;line-height:1.55;transition:border-color 0.15s;width:100%;min-height:60px}
 .detail-textarea:focus{border-color:var(--muted)}.detail-textarea::placeholder{color:var(--hint)}
-.notes-textarea{min-height:76px;border-color:var(--border);border-style:dashed}
+.notes-textarea{min-height:76px;border-style:dashed}
 .notes-textarea:focus,.notes-textarea:not(:placeholder-shown){border-style:solid}
 .add-task-row{padding:8px 18px 10px;display:flex;align-items:center;gap:10px}
 .add-task-input{flex:1;font-size:13px;font-family:inherit;background:transparent;border:none;outline:none;color:var(--text);padding:0}
@@ -130,23 +164,76 @@ body{font-family:'Geist',-apple-system,sans-serif;background:var(--bg);color:var
 .week-dot{width:8px;height:8px;border-radius:50%;background:var(--border);transition:background 0.2s}
 .week-dot.past{background:var(--text)}.week-dot.current{background:var(--text);box-shadow:0 0 0 2px var(--bg),0 0 0 3px var(--text)}
 .wdiv{font-size:11px;color:var(--hint);font-family:'Geist Mono',monospace;margin:0 2px}
-.add-goal-btn{display:flex;align-items:center;justify-content:center;gap:8px;width:100%;padding:14px;background:transparent;border:1.5px dashed var(--border);border-radius:var(--radius-lg);color:var(--muted);font-size:13px;font-family:inherit;cursor:pointer;transition:border-color 0.15s,color 0.15s,background 0.15s;margin-top:4px}
+.add-goal-btn{display:flex;align-items:center;justify-content:center;gap:8px;width:100%;padding:14px;background:transparent;border:1.5px dashed var(--border);border-radius:var(--radius-lg);color:var(--muted);font-size:13px;font-family:inherit;cursor:pointer;transition:all 0.15s;margin-top:4px}
 .add-goal-btn:hover{border-color:var(--muted);color:var(--text);background:var(--surface)}.add-goal-btn:disabled{opacity:0.4;cursor:not-allowed}
 .add-goal-btn svg{width:14px;height:14px}
 .limit-note{text-align:center;font-size:12px;color:var(--hint);margin-top:10px;font-family:'Geist Mono',monospace}
 .empty-state{text-align:center;padding:48px 24px;color:var(--hint);font-size:13px;line-height:2}
 .empty-state strong{display:block;font-size:15px;font-weight:500;color:var(--muted);margin-bottom:4px}
 .collapsed .task-list,.collapsed .add-task-row,.collapsed .goal-footer,.collapsed .resources-block{display:none}
-.toast{position:fixed;bottom:24px;left:50%;transform:translateX(-50%) translateY(80px);background:var(--text);color:var(--bg);font-size:13px;padding:10px 18px;border-radius:var(--radius);transition:transform 0.2s ease;z-index:100;pointer-events:none;white-space:nowrap;font-family:'Geist Mono',monospace}
+.toast{position:fixed;bottom:24px;left:50%;transform:translateX(-50%) translateY(80px);background:var(--text);color:var(--bg);font-size:13px;padding:10px 18px;border-radius:var(--radius);transition:transform 0.2s ease;z-index:300;pointer-events:none;white-space:nowrap;font-family:'Geist Mono',monospace}
 .toast.show{transform:translateX(-50%) translateY(0)}
 </style>
 </head>
 <body>
+
+<!-- setup overlay -->
+<div class="setup-overlay" id="setup-overlay">
+  <div class="setup-card">
+    <h2>Connect to GitHub</h2>
+    <p>Your tracker will save directly to a file in your GitHub repo — so changes persist across devices and refreshes. Credentials are stored only in this browser.</p>
+    <div class="setup-field">
+      <label>Personal access token</label>
+      <input type="password" id="cfg-token" placeholder="ghp_xxxxxxxxxxxxxxxxxxxx" autocomplete="off">
+      <span class="hint">
+        Create one at <a href="https://github.com/settings/tokens/new" target="_blank">github.com/settings/tokens/new</a> — tick <strong>repo</strong> scope (or <strong>Contents: read &amp; write</strong> for fine-grained tokens).
+      </span>
+    </div>
+    <div class="setup-field">
+      <label>GitHub username</label>
+      <input type="text" id="cfg-user" placeholder="your-username" autocomplete="off" spellcheck="false">
+    </div>
+    <div class="setup-field">
+      <label>Repository name</label>
+      <input type="text" id="cfg-repo" placeholder="my-learning-tracker" autocomplete="off" spellcheck="false">
+    </div>
+    <div class="setup-field">
+      <label>File path in repo</label>
+      <input type="text" id="cfg-path" placeholder="index.html" autocomplete="off" spellcheck="false">
+      <span class="hint">Relative path to this file, e.g. <code>index.html</code> or <code>tracker/index.html</code></span>
+    </div>
+    <div class="setup-field">
+      <label>Branch</label>
+      <input type="text" id="cfg-branch" placeholder="main" autocomplete="off" spellcheck="false">
+    </div>
+    <div class="setup-actions">
+      <button class="btn-primary" id="setup-save-btn" onclick="setupSave()">Connect &amp; load</button>
+      <button class="btn-ghost" id="setup-skip-btn" onclick="setupSkip()">Use locally only</button>
+    </div>
+    <div class="setup-error" id="setup-error"></div>
+  </div>
+</div>
+
 <div class="page">
   <div class="page-header">
     <h1>Learning tracker</h1>
-    <p>Up to 3 goals ÃÂÃÂ· 3 weeks each ÃÂÃÂ· track what you're learning, building, and shipping</p>
+    <p>Up to 3 goals · 3 weeks each · track what you're learning, building, and shipping</p>
   </div>
+
+  <div class="sync-bar">
+    <div class="sync-status">
+      <div class="sync-dot" id="sync-dot"></div>
+      <span id="sync-label">not connected</span>
+    </div>
+    <div style="display:flex;align-items:center;gap:8px">
+      <span class="sync-repo" id="sync-repo"></span>
+      <div class="sync-actions">
+        <button class="sync-btn" onclick="manualSync()" id="sync-now-btn" style="display:none">sync now</button>
+        <button class="sync-btn" onclick="openSetup()">settings</button>
+      </div>
+    </div>
+  </div>
+
   <div class="summary-bar">
     <div class="stat">
       <div class="stat-label">goals active</div>
@@ -160,164 +247,341 @@ body{font-family:'Geist',-apple-system,sans-serif;background:var(--bg);color:var
     </div>
     <div class="stat">
       <div class="stat-label">completion</div>
-      <div class="stat-value" id="stat-pct">ÃÂ¢ÃÂÃÂ</div>
+      <div class="stat-value" id="stat-pct">—</div>
       <div class="stat-sub">overall progress</div>
     </div>
   </div>
+
   <div id="goals-list" class="goals-list"></div>
   <button class="add-goal-btn" id="add-goal-btn" onclick="addGoal()">
     <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><line x1="8" y1="2" x2="8" y2="14"/><line x1="2" y1="8" x2="14" y2="8"/></svg>
     Add learning goal
   </button>
-  <div class="limit-note" id="limit-note" style="display:none">3 goal limit reached ÃÂ¢ÃÂÃÂ complete or remove a goal to add a new one</div>
+  <div class="limit-note" id="limit-note" style="display:none">3 goal limit reached — complete or remove a goal to add a new one</div>
 </div>
 <div class="toast" id="toast"></div>
-<script>
-const SK='lt_v2';
-let S={goals:[]};
 
-function load(){
-  try{const s=localStorage.getItem(SK);if(s)S=JSON.parse(s);}catch(e){}
-  if(!S.goals)S.goals=[];
-  S.goals.forEach(g=>{
-    if(!g.links)g.links=[];
-    (g.tasks||[]).forEach(t=>{
-      if(!t.links)t.links=[];
-      if(t.description==null)t.description='';
-      if(t.notes==null)t.notes='';
-      if(t.expanded==null)t.expanded=false;
+<script>
+const CFG_KEY = 'lt_cfg';
+const DATA_MARKER_START = '/*TRACKER_DATA_START*/';
+const DATA_MARKER_END = '/*TRACKER_DATA_END*/';
+
+let S = { goals: [] };
+let cfg = null;
+let fileSha = null;
+let syncTimer = null;
+let syncState = 'offline'; // offline | saving | saved | error
+
+function loadCfg() {
+  try { const c = localStorage.getItem(CFG_KEY); if (c) cfg = JSON.parse(c); } catch(e) {}
+}
+function saveCfg() { localStorage.setItem(CFG_KEY, JSON.stringify(cfg)); }
+
+function setSyncState(state, label) {
+  syncState = state;
+  const dot = document.getElementById('sync-dot');
+  const lbl = document.getElementById('sync-label');
+  dot.className = 'sync-dot ' + state;
+  lbl.textContent = label;
+}
+
+function uid() { return Math.random().toString(36).slice(2,9); }
+function esc(s) { return (s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); }
+
+function toast(m, dur=2200) {
+  const e = document.getElementById('toast');
+  e.textContent = m;
+  e.classList.add('show');
+  clearTimeout(toast._t);
+  toast._t = setTimeout(() => e.classList.remove('show'), dur);
+}
+
+function daysLeft(d) {
+  if (!d) return null;
+  const n = new Date(); n.setHours(0,0,0,0);
+  const dl = new Date(d); dl.setHours(0,0,0,0);
+  return Math.round((dl-n)/86400000);
+}
+function maxDl() { const d = new Date(); d.setDate(d.getDate()+21); return d.toISOString().split('T')[0]; }
+function minDl() { return new Date().toISOString().split('T')[0]; }
+function dlLabel(dl, done) {
+  if (!dl) return { text:'no deadline set', cls:'' };
+  const d = daysLeft(dl);
+  if (done) return { text:'completed', cls:'done' };
+  if (d < 0) return { text:`${Math.abs(d)}d overdue`, cls:'overdue' };
+  if (d === 0) return { text:'due today', cls:'urgent' };
+  if (d <= 3) return { text:`${d}d left`, cls:'urgent' };
+  return { text:`${d}d left`, cls:'' };
+}
+
+function normalizeGoals() {
+  if (!S.goals) S.goals = [];
+  S.goals.forEach(g => {
+    if (!g.links) g.links = [];
+    (g.tasks||[]).forEach(t => {
+      if (!t.links) t.links = [];
+      if (t.description == null) t.description = '';
+      if (t.notes == null) t.notes = '';
+      if (t.expanded == null) t.expanded = false;
     });
   });
 }
-function save(){localStorage.setItem(SK,JSON.stringify(S));}
-function uid(){return Math.random().toString(36).slice(2,9);}
-function esc(s){return(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');}
-function toast(m){const e=document.getElementById('toast');e.textContent=m;e.classList.add('show');setTimeout(()=>e.classList.remove('show'),2200);}
-function daysLeft(d){if(!d)return null;const n=new Date();n.setHours(0,0,0,0);const dl=new Date(d);dl.setHours(0,0,0,0);return Math.round((dl-n)/86400000);}
-function maxDl(){const d=new Date();d.setDate(d.getDate()+21);return d.toISOString().split('T')[0];}
-function minDl(){return new Date().toISOString().split('T')[0];}
-function dlLabel(dl,done){
-  if(!dl)return{text:'no deadline set',cls:''};
-  const d=daysLeft(dl);
-  if(done)return{text:'completed',cls:'done'};
-  if(d<0)return{text:`${Math.abs(d)}d overdue`,cls:'overdue'};
-  if(d===0)return{text:'due today',cls:'urgent'};
-  if(d<=3)return{text:`${d}d left`,cls:'urgent'};
-  return{text:`${d}d left`,cls:''};
-}
-function G(gid){return S.goals.find(g=>g.id===gid);}
-function T(gid,tid){return G(gid).tasks.find(t=>t.id===tid);}
 
-function addGoal(){
-  if(S.goals.length>=3){toast('3 goal limit reached');return;}
-  S.goals.push({id:uid(),title:'',deadline:maxDl(),tasks:[],links:[],collapsed:false});
-  save();render();
-  setTimeout(()=>{const ins=document.querySelectorAll('.goal-title-input');if(ins.length)ins[ins.length-1].focus();},50);
-}
-function deleteGoal(gid){S.goals=S.goals.filter(g=>g.id!==gid);save();render();}
-function toggleCollapse(gid){G(gid).collapsed=!G(gid).collapsed;save();render();}
-function updateGoalTitle(gid,v){G(gid).title=v;save();}
-function updateDeadline(gid,v){if(v>maxDl()){v=maxDl();toast('max 3 weeks from today');}G(gid).deadline=v;save();render();}
+function G(gid) { return S.goals.find(g => g.id === gid); }
+function T(gid, tid) { return G(gid).tasks.find(t => t.id === tid); }
 
-function addGoalLink(gid){
-  const u=document.getElementById('gl-u-'+gid);
-  const l=document.getElementById('gl-l-'+gid);
-  const url=u.value.trim();if(!url)return;
-  const href=url.startsWith('http')?url:'https://'+url;
-  G(gid).links.push({id:uid(),url:href,label:l.value.trim()||href});
-  u.value='';l.value='';save();render();
-  setTimeout(()=>document.getElementById('gl-u-'+gid)?.focus(),30);
-}
-function delGoalLink(gid,lid){G(gid).links=G(gid).links.filter(l=>l.id!==lid);save();render();}
+/* ── GitHub API ─────────────────────────────────────── */
 
-function addTask(gid){
-  const inp=document.getElementById('nt-'+gid);
-  const tp=document.querySelector(`[data-goal="${gid}"] .type-pill.active`);
-  const text=inp.value.trim();if(!text)return;
-  G(gid).tasks.push({id:uid(),text,type:tp?tp.dataset.t:'learn',done:false,description:'',notes:'',links:[],expanded:false});
-  inp.value='';save();render();
-  setTimeout(()=>document.getElementById('nt-'+gid)?.focus(),30);
+function apiHeaders() {
+  return {
+    'Authorization': `Bearer ${cfg.token}`,
+    'Accept': 'application/vnd.github+json',
+    'X-GitHub-Api-Version': '2022-11-28',
+    'Content-Type': 'application/json'
+  };
 }
-function delTask(gid,tid){G(gid).tasks=G(gid).tasks.filter(t=>t.id!==tid);save();render();}
-function toggleTask(gid,tid){T(gid,tid).done=!T(gid,tid).done;save();render();}
-function cycleType(gid,tid){const t=T(gid,tid);const types=['learn','build','assess','cert'];t.type=types[(types.indexOf(t.type)+1)%types.length];save();render();}
-function toggleExpand(gid,tid){T(gid,tid).expanded=!T(gid,tid).expanded;save();render();}
-function updateTaskText(gid,tid,v){T(gid,tid).text=v;save();}
-function updateDesc(gid,tid,v){T(gid,tid).description=v;save();}
-function updateNotes(gid,tid,v){T(gid,tid).notes=v;save();}
 
-function addTaskLink(gid,tid){
-  const u=document.getElementById(`tl-u-${gid}-${tid}`);
-  const l=document.getElementById(`tl-l-${gid}-${tid}`);
-  const url=u.value.trim();if(!url)return;
-  const href=url.startsWith('http')?url:'https://'+url;
-  T(gid,tid).links.push({id:uid(),url:href,label:l.value.trim()||href});
-  u.value='';l.value='';save();render();
-  setTimeout(()=>document.getElementById(`tl-u-${gid}-${tid}`)?.focus(),30);
+function apiUrl() {
+  return `https://api.github.com/repos/${cfg.user}/${cfg.repo}/contents/${cfg.path}`;
 }
-function delTaskLink(gid,tid,lid){T(gid,tid).links=T(gid,tid).links.filter(l=>l.id!==lid);save();render();}
-function selectType(gid,type){document.querySelectorAll(`[data-goal="${gid}"] .type-pill`).forEach(p=>p.classList.toggle('active',p.dataset.t===type));}
 
-function weekDots(dl){
-  if(!dl)return'';
-  const d=daysLeft(dl);
-  const el=Math.max(0,Math.min(21,21-d));
-  let h='<div class="week-timeline">';
-  for(let i=0;i<21;i++){
-    const cls=i<el?'past':i===el?'current':'';
-    h+=`<div class="week-dot ${cls}"></div>`;
-    if(i===6||i===13)h+='<span class="wdiv">ÃÂÃÂ·</span>';
+async function fetchFileFromGitHub() {
+  const res = await fetch(`${apiUrl()}?ref=${cfg.branch}&t=${Date.now()}`, { headers: apiHeaders() });
+  if (!res.ok) throw new Error(`GitHub ${res.status}: ${res.statusText}`);
+  const json = await res.json();
+  fileSha = json.sha;
+  const html = atob(json.content.replace(/\n/g,''));
+  const start = html.indexOf(DATA_MARKER_START);
+  const end = html.indexOf(DATA_MARKER_END);
+  if (start !== -1 && end !== -1) {
+    const raw = html.slice(start + DATA_MARKER_START.length, end).trim();
+    try { S = JSON.parse(raw); } catch(e) { S = { goals:[] }; }
+  }
+  normalizeGoals();
+}
+
+async function writeFileToGitHub() {
+  if (!cfg || !fileSha) return;
+  setSyncState('saving', 'saving…');
+  try {
+    const res = await fetch(apiUrl(), { headers: apiHeaders() });
+    if (!res.ok) throw new Error(`fetch ${res.status}`);
+    const json = await res.json();
+    fileSha = json.sha;
+    const currentHtml = atob(json.content.replace(/\n/g,''));
+
+    let newHtml;
+    const start = currentHtml.indexOf(DATA_MARKER_START);
+    const end = currentHtml.indexOf(DATA_MARKER_END);
+    const dataBlock = `${DATA_MARKER_START}\n${JSON.stringify(S)}\n${DATA_MARKER_END}`;
+
+    if (start !== -1 && end !== -1) {
+      newHtml = currentHtml.slice(0, start) + dataBlock + currentHtml.slice(end + DATA_MARKER_END.length);
+    } else {
+      newHtml = currentHtml.replace('</body>', `<script id="tracker-data">\n${dataBlock}\n<\/script>\n</body>`);
+    }
+
+    const encoded = btoa(unescape(encodeURIComponent(newHtml)));
+    const putRes = await fetch(apiUrl(), {
+      method: 'PUT',
+      headers: apiHeaders(),
+      body: JSON.stringify({
+        message: 'tracker: update data',
+        content: encoded,
+        sha: fileSha,
+        branch: cfg.branch
+      })
+    });
+    if (!putRes.ok) {
+      const err = await putRes.json().catch(() => ({}));
+      throw new Error(err.message || `PUT ${putRes.status}`);
+    }
+    const putJson = await putRes.json();
+    fileSha = putJson.content.sha;
+    const now = new Date().toLocaleTimeString([], {hour:'2-digit',minute:'2-digit'});
+    setSyncState('saved', `saved ${now}`);
+  } catch(e) {
+    setSyncState('error', 'sync failed — retry?');
+    document.getElementById('sync-now-btn').style.display = 'inline-block';
+    console.error('GitHub sync error:', e);
+  }
+}
+
+function scheduleSave() {
+  clearTimeout(syncTimer);
+  setSyncState('saving', 'unsaved changes…');
+  if (cfg) {
+    syncTimer = setTimeout(writeFileToGitHub, 1500);
+  } else {
+    setSyncState('offline', 'local only');
+  }
+}
+
+async function manualSync() {
+  document.getElementById('sync-now-btn').style.display = 'none';
+  await writeFileToGitHub();
+}
+
+/* ── Setup screen ───────────────────────────────────── */
+
+function openSetup() {
+  if (cfg) {
+    document.getElementById('cfg-token').value = cfg.token || '';
+    document.getElementById('cfg-user').value = cfg.user || '';
+    document.getElementById('cfg-repo').value = cfg.repo || '';
+    document.getElementById('cfg-path').value = cfg.path || 'index.html';
+    document.getElementById('cfg-branch').value = cfg.branch || 'main';
+  }
+  document.getElementById('setup-overlay').classList.remove('hidden');
+}
+
+function setupSkip() {
+  document.getElementById('setup-overlay').classList.add('hidden');
+  setSyncState('offline', 'local only');
+  render();
+}
+
+async function setupSave() {
+  const token = document.getElementById('cfg-token').value.trim();
+  const user = document.getElementById('cfg-user').value.trim();
+  const repo = document.getElementById('cfg-repo').value.trim();
+  const path = document.getElementById('cfg-path').value.trim() || 'index.html';
+  const branch = document.getElementById('cfg-branch').value.trim() || 'main';
+  const errEl = document.getElementById('setup-error');
+  const btn = document.getElementById('setup-save-btn');
+
+  errEl.classList.remove('show');
+  if (!token || !user || !repo) { errEl.textContent = 'Token, username and repo are required.'; errEl.classList.add('show'); return; }
+
+  btn.disabled = true; btn.textContent = 'Connecting…';
+
+  cfg = { token, user, repo, path, branch };
+
+  try {
+    await fetchFileFromGitHub();
+    saveCfg();
+    document.getElementById('setup-overlay').classList.add('hidden');
+    document.getElementById('sync-repo').textContent = `${user}/${repo}`;
+    document.getElementById('sync-now-btn').style.display = 'none';
+    setSyncState('saved', 'connected');
+    render();
+  } catch(e) {
+    cfg = null;
+    errEl.textContent = `Could not connect: ${e.message}. Check your token, username, repo name, file path and branch.`;
+    errEl.classList.add('show');
+  } finally {
+    btn.disabled = false; btn.textContent = 'Connect & load';
+  }
+}
+
+/* ── State mutators (all call scheduleSave) ─────────── */
+
+function save() { scheduleSave(); }
+
+function addGoal() {
+  if (S.goals.length >= 3) { toast('3 goal limit reached'); return; }
+  S.goals.push({ id:uid(), title:'', deadline:maxDl(), tasks:[], links:[], collapsed:false });
+  save(); render();
+  setTimeout(() => { const ins = document.querySelectorAll('.goal-title-input'); if (ins.length) ins[ins.length-1].focus(); }, 50);
+}
+function deleteGoal(gid) { S.goals = S.goals.filter(g => g.id !== gid); save(); render(); }
+function toggleCollapse(gid) { G(gid).collapsed = !G(gid).collapsed; save(); render(); }
+function updateGoalTitle(gid, v) { G(gid).title = v; save(); }
+function updateDeadline(gid, v) { if (v > maxDl()) { v = maxDl(); toast('max 3 weeks from today'); } G(gid).deadline = v; save(); render(); }
+
+function addGoalLink(gid) {
+  const u = document.getElementById('gl-u-'+gid), l = document.getElementById('gl-l-'+gid);
+  const url = u.value.trim(); if (!url) return;
+  const href = url.startsWith('http') ? url : 'https://'+url;
+  G(gid).links.push({ id:uid(), url:href, label:l.value.trim()||href });
+  u.value=''; l.value=''; save(); render();
+  setTimeout(() => document.getElementById('gl-u-'+gid)?.focus(), 30);
+}
+function delGoalLink(gid, lid) { G(gid).links = G(gid).links.filter(l => l.id !== lid); save(); render(); }
+
+function addTask(gid) {
+  const inp = document.getElementById('nt-'+gid);
+  const tp = document.querySelector(`[data-goal="${gid}"] .type-pill.active`);
+  const text = inp.value.trim(); if (!text) return;
+  G(gid).tasks.push({ id:uid(), text, type:tp?tp.dataset.t:'learn', done:false, description:'', notes:'', links:[], expanded:false });
+  inp.value=''; save(); render();
+  setTimeout(() => document.getElementById('nt-'+gid)?.focus(), 30);
+}
+function delTask(gid, tid) { G(gid).tasks = G(gid).tasks.filter(t => t.id !== tid); save(); render(); }
+function toggleTask(gid, tid) { T(gid,tid).done = !T(gid,tid).done; save(); render(); }
+function cycleType(gid, tid) { const t = T(gid,tid); const types=['learn','build','assess','cert']; t.type=types[(types.indexOf(t.type)+1)%types.length]; save(); render(); }
+function toggleExpand(gid, tid) { T(gid,tid).expanded = !T(gid,tid).expanded; save(); render(); }
+function updateTaskText(gid, tid, v) { T(gid,tid).text = v; save(); }
+function updateDesc(gid, tid, v) { T(gid,tid).description = v; save(); }
+function updateNotes(gid, tid, v) { T(gid,tid).notes = v; save(); }
+
+function addTaskLink(gid, tid) {
+  const u = document.getElementById(`tl-u-${gid}-${tid}`), l = document.getElementById(`tl-l-${gid}-${tid}`);
+  const url = u.value.trim(); if (!url) return;
+  const href = url.startsWith('http') ? url : 'https://'+url;
+  T(gid,tid).links.push({ id:uid(), url:href, label:l.value.trim()||href });
+  u.value=''; l.value=''; save(); render();
+  setTimeout(() => document.getElementById(`tl-u-${gid}-${tid}`)?.focus(), 30);
+}
+function delTaskLink(gid, tid, lid) { T(gid,tid).links = T(gid,tid).links.filter(l => l.id !== lid); save(); render(); }
+function selectType(gid, type) { document.querySelectorAll(`[data-goal="${gid}"] .type-pill`).forEach(p => p.classList.toggle('active', p.dataset.t === type)); }
+
+/* ── Render helpers ─────────────────────────────────── */
+
+function weekDots(dl) {
+  if (!dl) return '';
+  const d = daysLeft(dl);
+  const el = Math.max(0, Math.min(21, 21-d));
+  let h = '<div class="week-timeline">';
+  for (let i=0; i<21; i++) {
+    const cls = i<el ? 'past' : i===el ? 'current' : '';
+    h += `<div class="week-dot ${cls}"></div>`;
+    if (i===6||i===13) h += '<span class="wdiv">·</span>';
   }
   return h+'</div>';
 }
+function chainIcon() { return `<svg class="link-icon" viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M5.5 8.5a3 3 0 004.243 0l2-2a3 3 0 00-4.243-4.243l-1 1"/><path d="M8.5 5.5a3 3 0 00-4.243 0l-2 2a3 3 0 004.243 4.243l1-1"/></svg>`; }
+function xIcon() { return `<svg viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="1.5"><line x1="2" y1="2" x2="10" y2="10"/><line x1="10" y1="2" x2="2" y2="10"/></svg>`; }
 
-function linkChain(icon){
-  return`<svg class="link-icon" viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M5.5 8.5a3 3 0 004.243 0l2-2a3 3 0 00-4.243-4.243l-1 1"/><path d="M8.5 5.5a3 3 0 00-4.243 0l-2 2a3 3 0 004.243 4.243l1-1"/></svg>`;
-}
-function xIcon(){
-  return`<svg viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="1.5"><line x1="2" y1="2" x2="10" y2="10"/><line x1="10" y1="2" x2="2" y2="10"/></svg>`;
-}
-
-function renderLinkList(links, delFn){
-  return links.map(l=>`
+function renderLinks(links, delFn) {
+  return links.map(l => `
     <div class="link-item">
-      ${linkChain()}
-      <a class="link-anchor" href="${esc(l.url)}" target="_blank" rel="noopener" title="${esc(l.url)}">${esc(l.label||l.url)}</a>
+      ${chainIcon()}
+      <a class="link-anchor" href="${esc(l.url)}" target="_blank" rel="noopener">${esc(l.label||l.url)}</a>
       <button class="link-del" onclick="${delFn}('${l.id}')">${xIcon()}</button>
     </div>`).join('');
 }
 
-function render(){
-  const list=document.getElementById('goals-list');
-  const btn=document.getElementById('add-goal-btn');
-  document.getElementById('limit-note').style.display=S.goals.length>=3?'block':'none';
-  btn.disabled=S.goals.length>=3;
+function render() {
+  const list = document.getElementById('goals-list');
+  document.getElementById('limit-note').style.display = S.goals.length>=3 ? 'block' : 'none';
+  document.getElementById('add-goal-btn').disabled = S.goals.length>=3;
 
-  let td=0,tt=0;
-  S.goals.forEach(g=>{tt+=g.tasks.length;td+=g.tasks.filter(t=>t.done).length;});
-  document.getElementById('stat-goals').textContent=S.goals.length;
-  document.getElementById('stat-done').textContent=td;
-  document.getElementById('stat-done-sub').textContent=`of ${tt} total`;
-  document.getElementById('stat-pct').textContent=tt?Math.round(td/tt*100)+'%':'ÃÂ¢ÃÂÃÂ';
+  let td=0, tt=0;
+  S.goals.forEach(g => { tt+=g.tasks.length; td+=g.tasks.filter(t=>t.done).length; });
+  document.getElementById('stat-goals').textContent = S.goals.length;
+  document.getElementById('stat-done').textContent = td;
+  document.getElementById('stat-done-sub').textContent = `of ${tt} total`;
+  document.getElementById('stat-pct').textContent = tt ? Math.round(td/tt*100)+'%' : '—';
 
-  if(!S.goals.length){
-    list.innerHTML=`<div class="empty-state"><strong>No goals yet</strong>Add up to 3 learning goals below.<br>Each goal can have tasks tagged as learn, build, assess, or cert.</div>`;
+  if (!S.goals.length) {
+    list.innerHTML = `<div class="empty-state"><strong>No goals yet</strong>Add up to 3 learning goals below.<br>Each goal can have tasks tagged as learn, build, assess, or cert.</div>`;
     return;
   }
 
-  list.innerHTML=S.goals.map(goal=>{
-    const done=goal.tasks.filter(t=>t.done).length;
-    const total=goal.tasks.length;
-    const pct=total?Math.round(done/total*100):0;
-    const allDone=total>0&&done===total;
-    const dl=dlLabel(goal.deadline,allDone);
-    const d=daysLeft(goal.deadline);
-    const overdue=d!==null&&d<0&&!allDone;
-    const cls=allDone?'goal-card complete':overdue?'goal-card overdue':'goal-card';
+  list.innerHTML = S.goals.map(goal => {
+    const done = goal.tasks.filter(t=>t.done).length;
+    const total = goal.tasks.length;
+    const pct = total ? Math.round(done/total*100) : 0;
+    const allDone = total>0 && done===total;
+    const dl = dlLabel(goal.deadline, allDone);
+    const d = daysLeft(goal.deadline);
+    const overdue = d!==null && d<0 && !allDone;
+    const cls = allDone ? 'goal-card complete' : overdue ? 'goal-card overdue' : 'goal-card';
 
-    const tasksHtml=goal.tasks.map(task=>{
-      const hasExtra=task.description||task.notes||task.links.length>0;
-      const detailHtml=task.expanded?`
+    const tasksHtml = goal.tasks.map(task => {
+      const hasExtra = task.description || task.notes || task.links.length>0;
+      const detailHtml = task.expanded ? `
         <div class="task-detail">
           <div class="detail-group">
             <span class="detail-group-label">description</span>
@@ -326,21 +590,21 @@ function render(){
           </div>
           <div class="detail-group">
             <span class="detail-group-label">learnings &amp; notes</span>
-            <textarea class="detail-textarea notes-textarea" placeholder="What did you learn? Record key takeaways after completing thisÃÂ¢ÃÂÃÂ¦"
+            <textarea class="detail-textarea notes-textarea" placeholder="What did you learn? Record key takeaways after completing this…"
               onblur="updateNotes('${goal.id}','${task.id}',this.value)">${esc(task.notes)}</textarea>
           </div>
           <div class="detail-group">
-            <span class="detail-group-label">resources${task.links.length?` (${task.links.length})`:''}</span>
-            ${task.links.length?`<div class="link-list">${renderLinkList(task.links,`(lid)=>delTaskLink('${goal.id}','${task.id}',lid)`)}</div>`:''}
+            <span class="detail-group-label">resources${task.links.length ? ` (${task.links.length})` : ''}</span>
+            ${task.links.length ? `<div class="link-list">${renderLinks(task.links, `(lid)=>delTaskLink('${goal.id}','${task.id}',lid)`)}</div>` : ''}
             <div class="add-link-row" style="margin-top:4px">
-              <input class="link-input" id="tl-u-${goal.id}-${task.id}" placeholder="https://ÃÂ¢ÃÂÃÂ¦" onkeydown="if(event.key==='Enter')addTaskLink('${goal.id}','${task.id}')">
+              <input class="link-input" id="tl-u-${goal.id}-${task.id}" placeholder="https://…" onkeydown="if(event.key==='Enter')addTaskLink('${goal.id}','${task.id}')">
               <input class="link-input" id="tl-l-${goal.id}-${task.id}" placeholder="label" style="max-width:150px" onkeydown="if(event.key==='Enter')addTaskLink('${goal.id}','${task.id}')">
               <button class="small-btn" onclick="addTaskLink('${goal.id}','${task.id}')">+ add</button>
             </div>
           </div>
-        </div>`:' ';
+        </div>` : ' ';
 
-      return`<div class="task-row${task.expanded?' expanded':''}">
+      return `<div class="task-row${task.expanded?' expanded':''}">
         <div class="task-item">
           <div class="task-checkbox${task.done?' checked':''}" onclick="toggleTask('${goal.id}','${task.id}')">
             <svg viewBox="0 0 10 10" fill="none" stroke="white" stroke-width="1.5"><polyline points="1.5,5 4,7.5 8.5,2.5"/></svg>
@@ -350,10 +614,10 @@ function render(){
             onblur="updateTaskText('${goal.id}','${task.id}',this.value)"
             onkeydown="if(event.key==='Enter')this.blur()"
             placeholder="task name">
-          ${hasExtra?`<div class="indicator-dot" title="has notes or links"></div>`:''}
+          ${hasExtra ? `<div class="indicator-dot" title="has notes or links"></div>` : ''}
           <button class="expand-btn" onclick="toggleExpand('${goal.id}','${task.id}')" title="${task.expanded?'collapse':'expand'}">
             <svg viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="1.5">
-              ${task.expanded?'<polyline points="2,8 6,4 10,8"/>':'<polyline points="2,4 6,8 10,4"/>'}
+              ${task.expanded ? '<polyline points="2,8 6,4 10,8"/>' : '<polyline points="2,4 6,8 10,4"/>'}
             </svg>
           </button>
           <button class="task-del" onclick="delTask('${goal.id}','${task.id}')">
@@ -364,27 +628,27 @@ function render(){
       </div>`;
     }).join('');
 
-    return`<div class="${cls}${goal.collapsed?' collapsed':''}" data-goal="${goal.id}">
+    return `<div class="${cls}${goal.collapsed?' collapsed':''}" data-goal="${goal.id}">
       <div class="goal-header">
         <div class="goal-meta">
           <div class="goal-title-row">
-            <input class="goal-title-input" value="${esc(goal.title)}" placeholder="Name this goalÃÂ¢ÃÂÃÂ¦"
+            <input class="goal-title-input" value="${esc(goal.title)}" placeholder="Name this goal…"
               onblur="updateGoalTitle('${goal.id}',this.value)"
               onkeydown="if(event.key==='Enter')this.blur()">
-            ${allDone?`<span class="badge badge-green">done</span>`:overdue?`<span class="badge badge-red">overdue</span>`:''}
+            ${allDone ? `<span class="badge badge-green">done</span>` : overdue ? `<span class="badge badge-red">overdue</span>` : ''}
           </div>
           <div class="goal-info">
             <span class="deadline-text ${dl.cls}">${dl.text}</span>
-            ${total>0?`<div class="progress-wrap">
+            ${total>0 ? `<div class="progress-wrap">
               <div class="progress-bar"><div class="progress-fill" style="width:${pct}%"></div></div>
               <span class="progress-pct">${pct}%</span>
-            </div>`:''}
+            </div>` : ''}
           </div>
         </div>
         <div class="goal-actions">
           <button class="icon-btn" onclick="toggleCollapse('${goal.id}')" title="${goal.collapsed?'expand':'collapse'}">
             <svg viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="1.5">
-              ${goal.collapsed?'<polyline points="3,5 7,9 11,5"/>':'<polyline points="3,9 7,5 11,9"/>'}
+              ${goal.collapsed ? '<polyline points="3,5 7,9 11,5"/>' : '<polyline points="3,9 7,5 11,9"/>'}
             </svg>
           </button>
           <button class="icon-btn danger" onclick="deleteGoal('${goal.id}')" title="remove goal">
@@ -394,10 +658,10 @@ function render(){
       </div>
 
       <div class="resources-block">
-        <div class="resources-label">goal resources${goal.links.length?` (${goal.links.length})`:''}</div>
-        ${goal.links.length?`<div class="link-list">${renderLinkList(goal.links,`(lid)=>delGoalLink('${goal.id}',lid)`)}</div>`:''}
+        <div class="resources-label">goal resources${goal.links.length ? ` (${goal.links.length})` : ''}</div>
+        ${goal.links.length ? `<div class="link-list">${renderLinks(goal.links, `(lid)=>delGoalLink('${goal.id}',lid)`)}</div>` : ''}
         <div class="add-link-row">
-          <input class="link-input" id="gl-u-${goal.id}" placeholder="https://ÃÂ¢ÃÂÃÂ¦" onkeydown="if(event.key==='Enter')addGoalLink('${goal.id}')">
+          <input class="link-input" id="gl-u-${goal.id}" placeholder="https://…" onkeydown="if(event.key==='Enter')addGoalLink('${goal.id}')">
           <input class="link-input" id="gl-l-${goal.id}" placeholder="label" style="max-width:150px" onkeydown="if(event.key==='Enter')addGoalLink('${goal.id}')">
           <button class="small-btn" onclick="addGoalLink('${goal.id}')">+ add</button>
         </div>
@@ -415,7 +679,7 @@ function render(){
           <button class="type-pill" data-t="assess" onclick="selectType('${goal.id}','assess')">assess</button>
           <button class="type-pill" data-t="cert" onclick="selectType('${goal.id}','cert')">cert</button>
         </div>
-        <input class="add-task-input" id="nt-${goal.id}" placeholder="Add a taskÃÂ¢ÃÂÃÂ¦" onkeydown="if(event.key==='Enter')addTask('${goal.id}')">
+        <input class="add-task-input" id="nt-${goal.id}" placeholder="Add a task…" onkeydown="if(event.key==='Enter')addTask('${goal.id}')">
         <button class="add-task-btn" onclick="addTask('${goal.id}')">+ add</button>
       </div>
 
@@ -435,12 +699,35 @@ function render(){
   }).join('');
 }
 
-load();render();
-</script>
-<script id="tracker-data">
+/* ── Boot ───────────────────────────────────────────── */
+
+async function boot() {
+  loadCfg();
+
+  if (cfg) {
+    document.getElementById('setup-overlay').classList.add('hidden');
+    document.getElementById('sync-repo').textContent = `${cfg.user}/${cfg.repo}`;
+    setSyncState('saving', 'loading…');
+    try {
+      await fetchFileFromGitHub();
+      setSyncState('saved', 'loaded from GitHub');
+    } catch(e) {
+      setSyncState('error', 'load failed — check settings');
+      document.getElementById('sync-now-btn').style.display = 'inline-block';
+      toast('Could not load from GitHub. Working offline.', 4000);
+    }
+    render();
+  } else {
+    setSyncState('offline', 'not connected');
+    render();
+  }
+}
+
+/* embed existing data if present */
 /*TRACKER_DATA_START*/
-{"goals":[{"id":"vk2nttd","title":"React learning","deadline":"2026-05-09","tasks":[{"id":"t9lr2ma","text":"Thinking in react","type":"learn","done":false,"description":"","notes":"","links":[],"expanded":false}],"links":[],"collapsed":false}]}
 /*TRACKER_DATA_END*/
+
+boot();
 </script>
 </body>
 </html>
