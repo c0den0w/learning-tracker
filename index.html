@@ -145,7 +145,7 @@ body{font-family:'Geist',-apple-system,sans-serif;background:var(--bg);color:var
 <div class="page">
   <div class="page-header">
     <h1>Learning tracker</h1>
-    <p>Up to 3 goals Â· 3 weeks each Â· track what you're learning, building, and shipping</p>
+    <p>Up to 3 goals ÃÂ· 3 weeks each ÃÂ· track what you're learning, building, and shipping</p>
   </div>
   <div class="summary-bar">
     <div class="stat">
@@ -160,7 +160,7 @@ body{font-family:'Geist',-apple-system,sans-serif;background:var(--bg);color:var
     </div>
     <div class="stat">
       <div class="stat-label">completion</div>
-      <div class="stat-value" id="stat-pct">â</div>
+      <div class="stat-value" id="stat-pct">Ã¢ÂÂ</div>
       <div class="stat-sub">overall progress</div>
     </div>
   </div>
@@ -169,7 +169,7 @@ body{font-family:'Geist',-apple-system,sans-serif;background:var(--bg);color:var
     <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><line x1="8" y1="2" x2="8" y2="14"/><line x1="2" y1="8" x2="14" y2="8"/></svg>
     Add learning goal
   </button>
-  <div class="limit-note" id="limit-note" style="display:none">3 goal limit reached â complete or remove a goal to add a new one</div>
+  <div class="limit-note" id="limit-note" style="display:none">3 goal limit reached Ã¢ÂÂ complete or remove a goal to add a new one</div>
 </div>
 <div class="toast" id="toast"></div>
 <script>
@@ -266,7 +266,7 @@ function weekDots(dl){
   for(let i=0;i<21;i++){
     const cls=i<el?'past':i===el?'current':'';
     h+=`<div class="week-dot ${cls}"></div>`;
-    if(i===6||i===13)h+='<span class="wdiv">Â·</span>';
+    if(i===6||i===13)h+='<span class="wdiv">ÃÂ·</span>';
   }
   return h+'</div>';
 }
@@ -298,7 +298,7 @@ function render(){
   document.getElementById('stat-goals').textContent=S.goals.length;
   document.getElementById('stat-done').textContent=td;
   document.getElementById('stat-done-sub').textContent=`of ${tt} total`;
-  document.getElementById('stat-pct').textContent=tt?Math.round(td/tt*100)+'%':'â';
+  document.getElementById('stat-pct').textContent=tt?Math.round(td/tt*100)+'%':'Ã¢ÂÂ';
 
   if(!S.goals.length){
     list.innerHTML=`<div class="empty-state"><strong>No goals yet</strong>Add up to 3 learning goals below.<br>Each goal can have tasks tagged as learn, build, assess, or cert.</div>`;
@@ -326,14 +326,14 @@ function render(){
           </div>
           <div class="detail-group">
             <span class="detail-group-label">learnings &amp; notes</span>
-            <textarea class="detail-textarea notes-textarea" placeholder="What did you learn? Record key takeaways after completing thisâ¦"
+            <textarea class="detail-textarea notes-textarea" placeholder="What did you learn? Record key takeaways after completing thisÃ¢ÂÂ¦"
               onblur="updateNotes('${goal.id}','${task.id}',this.value)">${esc(task.notes)}</textarea>
           </div>
           <div class="detail-group">
             <span class="detail-group-label">resources${task.links.length?` (${task.links.length})`:''}</span>
             ${task.links.length?`<div class="link-list">${renderLinkList(task.links,`(lid)=>delTaskLink('${goal.id}','${task.id}',lid)`)}</div>`:''}
             <div class="add-link-row" style="margin-top:4px">
-              <input class="link-input" id="tl-u-${goal.id}-${task.id}" placeholder="https://â¦" onkeydown="if(event.key==='Enter')addTaskLink('${goal.id}','${task.id}')">
+              <input class="link-input" id="tl-u-${goal.id}-${task.id}" placeholder="https://Ã¢ÂÂ¦" onkeydown="if(event.key==='Enter')addTaskLink('${goal.id}','${task.id}')">
               <input class="link-input" id="tl-l-${goal.id}-${task.id}" placeholder="label" style="max-width:150px" onkeydown="if(event.key==='Enter')addTaskLink('${goal.id}','${task.id}')">
               <button class="small-btn" onclick="addTaskLink('${goal.id}','${task.id}')">+ add</button>
             </div>
@@ -368,7 +368,7 @@ function render(){
       <div class="goal-header">
         <div class="goal-meta">
           <div class="goal-title-row">
-            <input class="goal-title-input" value="${esc(goal.title)}" placeholder="Name this goalâ¦"
+            <input class="goal-title-input" value="${esc(goal.title)}" placeholder="Name this goalÃ¢ÂÂ¦"
               onblur="updateGoalTitle('${goal.id}',this.value)"
               onkeydown="if(event.key==='Enter')this.blur()">
             ${allDone?`<span class="badge badge-green">done</span>`:overdue?`<span class="badge badge-red">overdue</span>`:''}
@@ -397,7 +397,7 @@ function render(){
         <div class="resources-label">goal resources${goal.links.length?` (${goal.links.length})`:''}</div>
         ${goal.links.length?`<div class="link-list">${renderLinkList(goal.links,`(lid)=>delGoalLink('${goal.id}',lid)`)}</div>`:''}
         <div class="add-link-row">
-          <input class="link-input" id="gl-u-${goal.id}" placeholder="https://â¦" onkeydown="if(event.key==='Enter')addGoalLink('${goal.id}')">
+          <input class="link-input" id="gl-u-${goal.id}" placeholder="https://Ã¢ÂÂ¦" onkeydown="if(event.key==='Enter')addGoalLink('${goal.id}')">
           <input class="link-input" id="gl-l-${goal.id}" placeholder="label" style="max-width:150px" onkeydown="if(event.key==='Enter')addGoalLink('${goal.id}')">
           <button class="small-btn" onclick="addGoalLink('${goal.id}')">+ add</button>
         </div>
@@ -415,7 +415,7 @@ function render(){
           <button class="type-pill" data-t="assess" onclick="selectType('${goal.id}','assess')">assess</button>
           <button class="type-pill" data-t="cert" onclick="selectType('${goal.id}','cert')">cert</button>
         </div>
-        <input class="add-task-input" id="nt-${goal.id}" placeholder="Add a taskâ¦" onkeydown="if(event.key==='Enter')addTask('${goal.id}')">
+        <input class="add-task-input" id="nt-${goal.id}" placeholder="Add a taskÃ¢ÂÂ¦" onkeydown="if(event.key==='Enter')addTask('${goal.id}')">
         <button class="add-task-btn" onclick="addTask('${goal.id}')">+ add</button>
       </div>
 
@@ -439,7 +439,7 @@ load();render();
 </script>
 <script id="tracker-data">
 /*TRACKER_DATA_START*/
-{"goals":[{"id":"vk2nttd","title":"","deadline":"2026-05-09","tasks":[],"links":[],"collapsed":false}]}
+{"goals":[{"id":"vk2nttd","title":"React learning","deadline":"2026-05-09","tasks":[],"links":[],"collapsed":false}]}
 /*TRACKER_DATA_END*/
 </script>
 </body>
