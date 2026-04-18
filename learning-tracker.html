@@ -1,0 +1,923 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Learning Tracker</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Geist+Mono:wght@400;500&family=Geist:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --bg: #fafaf9;
+    --surface: #ffffff;
+    --border: #e5e5e4;
+    --border-light: #f0f0ef;
+    --text: #1c1c1a;
+    --muted: #737370;
+    --hint: #a8a8a5;
+    --accent: #1c1c1a;
+    --green-bg: #f0fdf4;
+    --green-border: #bbf7d0;
+    --green-text: #15803d;
+    --amber-bg: #fffbeb;
+    --amber-border: #fde68a;
+    --amber-text: #92400e;
+    --red-bg: #fef2f2;
+    --red-border: #fecaca;
+    --red-text: #991b1b;
+    --blue-bg: #eff6ff;
+    --blue-border: #bfdbfe;
+    --blue-text: #1e40af;
+    --radius: 8px;
+    --radius-lg: 12px;
+    font-size: 14px;
+  }
+
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --bg: #0c0c0b;
+      --surface: #161615;
+      --border: #2a2a28;
+      --border-light: #1f1f1d;
+      --text: #f0f0ee;
+      --muted: #888885;
+      --hint: #555552;
+      --accent: #f0f0ee;
+      --green-bg: #052e16;
+      --green-border: #166534;
+      --green-text: #86efac;
+      --amber-bg: #1c1400;
+      --amber-border: #92400e;
+      --amber-text: #fcd34d;
+      --red-bg: #1c0a0a;
+      --red-border: #991b1b;
+      --red-text: #fca5a5;
+      --blue-bg: #0c1a2e;
+      --blue-border: #1e3a5f;
+      --blue-text: #93c5fd;
+    }
+  }
+
+  body {
+    font-family: 'Geist', -apple-system, sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    min-height: 100vh;
+    line-height: 1.5;
+  }
+
+  .page {
+    max-width: 760px;
+    margin: 0 auto;
+    padding: 48px 24px 80px;
+  }
+
+  .page-header {
+    margin-bottom: 40px;
+    padding-bottom: 24px;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .page-header h1 {
+    font-size: 22px;
+    font-weight: 500;
+    letter-spacing: -0.02em;
+    margin-bottom: 4px;
+  }
+
+  .page-header p {
+    font-size: 13px;
+    color: var(--muted);
+  }
+
+  .summary-bar {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 12px;
+    margin-bottom: 32px;
+  }
+
+  .stat {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 14px 16px;
+  }
+
+  .stat-label {
+    font-size: 11px;
+    color: var(--muted);
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    margin-bottom: 6px;
+    font-family: 'Geist Mono', monospace;
+  }
+
+  .stat-value {
+    font-size: 22px;
+    font-weight: 500;
+    letter-spacing: -0.02em;
+    font-variant-numeric: tabular-nums;
+  }
+
+  .stat-sub {
+    font-size: 11px;
+    color: var(--hint);
+    margin-top: 2px;
+  }
+
+  .goals-list { display: flex; flex-direction: column; gap: 16px; }
+
+  .goal-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-lg);
+    overflow: hidden;
+    transition: border-color 0.15s;
+  }
+
+  .goal-card:hover { border-color: var(--muted); }
+
+  .goal-card.complete { border-color: var(--green-border); }
+  .goal-card.overdue { border-color: var(--red-border); }
+
+  .goal-header {
+    padding: 16px 18px;
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+    border-bottom: 1px solid var(--border-light);
+  }
+
+  .goal-meta { flex: 1; min-width: 0; }
+
+  .goal-title-row {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 4px;
+  }
+
+  .goal-title {
+    font-size: 15px;
+    font-weight: 500;
+    letter-spacing: -0.01em;
+    cursor: pointer;
+    flex: 1;
+    min-width: 0;
+  }
+
+  .goal-title-input {
+    font-size: 15px;
+    font-weight: 500;
+    font-family: inherit;
+    letter-spacing: -0.01em;
+    background: transparent;
+    border: none;
+    outline: none;
+    width: 100%;
+    color: var(--text);
+    padding: 0;
+  }
+
+  .goal-title-input::placeholder { color: var(--hint); }
+
+  .goal-info {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    flex-wrap: wrap;
+  }
+
+  .deadline-text {
+    font-size: 12px;
+    color: var(--muted);
+    font-family: 'Geist Mono', monospace;
+  }
+
+  .deadline-text.urgent { color: var(--amber-text); }
+  .deadline-text.overdue { color: var(--red-text); }
+  .deadline-text.done { color: var(--green-text); }
+
+  .progress-wrap {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    flex: 1;
+  }
+
+  .progress-bar {
+    height: 4px;
+    background: var(--border);
+    border-radius: 2px;
+    overflow: hidden;
+    flex: 1;
+    min-width: 80px;
+  }
+
+  .progress-fill {
+    height: 100%;
+    background: var(--text);
+    border-radius: 2px;
+    transition: width 0.3s ease;
+  }
+
+  .goal-card.complete .progress-fill { background: var(--green-text); }
+  .goal-card.overdue .progress-fill { background: var(--red-text); }
+
+  .progress-pct {
+    font-size: 11px;
+    color: var(--muted);
+    font-family: 'Geist Mono', monospace;
+    min-width: 28px;
+    text-align: right;
+  }
+
+  .badge {
+    font-size: 11px;
+    padding: 2px 8px;
+    border-radius: 999px;
+    border: 1px solid;
+    font-family: 'Geist Mono', monospace;
+    white-space: nowrap;
+  }
+
+  .badge-green { background: var(--green-bg); border-color: var(--green-border); color: var(--green-text); }
+  .badge-amber { background: var(--amber-bg); border-color: var(--amber-border); color: var(--amber-text); }
+  .badge-red { background: var(--red-bg); border-color: var(--red-border); color: var(--red-text); }
+  .badge-blue { background: var(--blue-bg); border-color: var(--blue-border); color: var(--blue-text); }
+  .badge-gray { background: var(--border-light); border-color: var(--border); color: var(--muted); }
+
+  .goal-actions {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    flex-shrink: 0;
+  }
+
+  .icon-btn {
+    width: 28px;
+    height: 28px;
+    border: none;
+    background: transparent;
+    border-radius: var(--radius);
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--hint);
+    transition: background 0.1s, color 0.1s;
+  }
+
+  .icon-btn:hover { background: var(--border-light); color: var(--text); }
+  .icon-btn.danger:hover { background: var(--red-bg); color: var(--red-text); }
+
+  .icon-btn svg { width: 14px; height: 14px; }
+
+  .task-list { padding: 8px 0; }
+
+  .task-item {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 8px 18px;
+    transition: background 0.1s;
+    border-radius: 0;
+  }
+
+  .task-item:hover { background: var(--border-light); }
+
+  .task-checkbox {
+    width: 16px;
+    height: 16px;
+    border: 1.5px solid var(--border);
+    border-radius: 4px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    transition: border-color 0.15s, background 0.15s;
+    background: transparent;
+  }
+
+  .task-checkbox:hover { border-color: var(--muted); }
+
+  .task-checkbox.checked {
+    background: var(--text);
+    border-color: var(--text);
+  }
+
+  .task-checkbox.checked svg { display: block; }
+  .task-checkbox svg { display: none; width: 10px; height: 10px; }
+
+  .task-label {
+    flex: 1;
+    font-size: 13.5px;
+    color: var(--text);
+    cursor: pointer;
+    line-height: 1.4;
+  }
+
+  .task-label.done {
+    color: var(--hint);
+    text-decoration: line-through;
+  }
+
+  .task-label-input {
+    font-size: 13.5px;
+    font-family: inherit;
+    background: transparent;
+    border: none;
+    outline: none;
+    width: 100%;
+    color: var(--text);
+    padding: 0;
+    line-height: 1.4;
+  }
+
+  .task-label-input::placeholder { color: var(--hint); }
+
+  .task-type {
+    font-size: 10px;
+    padding: 2px 7px;
+    border-radius: 999px;
+    border: 1px solid;
+    font-family: 'Geist Mono', monospace;
+    cursor: pointer;
+    transition: opacity 0.1s;
+    flex-shrink: 0;
+  }
+
+  .task-type:hover { opacity: 0.7; }
+
+  .task-type[data-t="learn"] { background: var(--blue-bg); border-color: var(--blue-border); color: var(--blue-text); }
+  .task-type[data-t="build"] { background: var(--amber-bg); border-color: var(--amber-border); color: var(--amber-text); }
+  .task-type[data-t="assess"] { background: var(--green-bg); border-color: var(--green-border); color: var(--green-text); }
+  .task-type[data-t="cert"] { background: #fdf4ff; border-color: #e9d5ff; color: #7e22ce; }
+
+  @media (prefers-color-scheme: dark) {
+    .task-type[data-t="cert"] { background: #1a0b2e; border-color: #5b21b6; color: #d8b4fe; }
+  }
+
+  .task-delete {
+    width: 22px;
+    height: 22px;
+    border: none;
+    background: transparent;
+    border-radius: 4px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--hint);
+    opacity: 0;
+    transition: opacity 0.1s, background 0.1s, color 0.1s;
+    flex-shrink: 0;
+  }
+
+  .task-item:hover .task-delete { opacity: 1; }
+  .task-delete:hover { background: var(--red-bg); color: var(--red-text); }
+  .task-delete svg { width: 12px; height: 12px; }
+
+  .add-task-row {
+    padding: 8px 18px 10px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+
+  .add-task-input {
+    flex: 1;
+    font-size: 13px;
+    font-family: inherit;
+    background: transparent;
+    border: none;
+    outline: none;
+    color: var(--text);
+    padding: 0;
+  }
+
+  .add-task-input::placeholder { color: var(--hint); }
+
+  .add-task-btn {
+    font-size: 12px;
+    font-family: 'Geist Mono', monospace;
+    background: transparent;
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    color: var(--muted);
+    cursor: pointer;
+    padding: 4px 10px;
+    transition: background 0.1s, color 0.1s, border-color 0.1s;
+    white-space: nowrap;
+  }
+
+  .add-task-btn:hover { background: var(--border-light); color: var(--text); border-color: var(--muted); }
+
+  .type-selector {
+    display: flex;
+    gap: 4px;
+    flex-shrink: 0;
+  }
+
+  .type-pill {
+    font-size: 10px;
+    padding: 3px 8px;
+    border-radius: 999px;
+    border: 1px solid var(--border);
+    cursor: pointer;
+    color: var(--muted);
+    background: transparent;
+    font-family: 'Geist Mono', monospace;
+    transition: all 0.1s;
+  }
+
+  .type-pill.active[data-t="learn"] { background: var(--blue-bg); border-color: var(--blue-border); color: var(--blue-text); }
+  .type-pill.active[data-t="build"] { background: var(--amber-bg); border-color: var(--amber-border); color: var(--amber-text); }
+  .type-pill.active[data-t="assess"] { background: var(--green-bg); border-color: var(--green-border); color: var(--green-text); }
+  .type-pill.active[data-t="cert"] { background: #fdf4ff; border-color: #e9d5ff; color: #7e22ce; }
+  @media (prefers-color-scheme: dark) {
+    .type-pill.active[data-t="cert"] { background: #1a0b2e; border-color: #5b21b6; color: #d8b4fe; }
+  }
+
+  .goal-footer {
+    padding: 10px 18px;
+    border-top: 1px solid var(--border-light);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+
+  .deadline-picker {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .deadline-label {
+    font-size: 11px;
+    color: var(--hint);
+    font-family: 'Geist Mono', monospace;
+  }
+
+  .deadline-input {
+    font-size: 12px;
+    font-family: 'Geist Mono', monospace;
+    background: transparent;
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    color: var(--text);
+    padding: 4px 8px;
+    cursor: pointer;
+    outline: none;
+    transition: border-color 0.15s;
+  }
+
+  .deadline-input:hover { border-color: var(--muted); }
+  .deadline-input:focus { border-color: var(--text); }
+
+  .task-count {
+    font-size: 11px;
+    color: var(--hint);
+    font-family: 'Geist Mono', monospace;
+  }
+
+  .add-goal-btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    width: 100%;
+    padding: 14px;
+    background: transparent;
+    border: 1.5px dashed var(--border);
+    border-radius: var(--radius-lg);
+    color: var(--muted);
+    font-size: 13px;
+    font-family: inherit;
+    cursor: pointer;
+    transition: border-color 0.15s, color 0.15s, background 0.15s;
+    margin-top: 4px;
+  }
+
+  .add-goal-btn:hover {
+    border-color: var(--muted);
+    color: var(--text);
+    background: var(--surface);
+  }
+
+  .add-goal-btn:disabled {
+    opacity: 0.4;
+    cursor: not-allowed;
+  }
+
+  .add-goal-btn svg { width: 14px; height: 14px; }
+
+  .limit-note {
+    text-align: center;
+    font-size: 12px;
+    color: var(--hint);
+    margin-top: 10px;
+    font-family: 'Geist Mono', monospace;
+  }
+
+  .empty-state {
+    text-align: center;
+    padding: 48px 24px;
+    color: var(--hint);
+    font-size: 13px;
+    line-height: 2;
+  }
+
+  .empty-state strong {
+    display: block;
+    font-size: 15px;
+    font-weight: 500;
+    color: var(--muted);
+    margin-bottom: 4px;
+  }
+
+  .week-timeline {
+    display: flex;
+    gap: 4px;
+    align-items: center;
+  }
+
+  .week-dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: var(--border);
+    transition: background 0.2s;
+  }
+
+  .week-dot.past { background: var(--text); }
+  .week-dot.current { background: var(--text); box-shadow: 0 0 0 2px var(--bg), 0 0 0 3px var(--text); }
+  .week-dot.future { background: var(--border); }
+
+  .divider-label {
+    font-size: 11px;
+    color: var(--hint);
+    font-family: 'Geist Mono', monospace;
+    margin: 0 2px;
+  }
+
+  .toast {
+    position: fixed;
+    bottom: 24px;
+    left: 50%;
+    transform: translateX(-50%) translateY(80px);
+    background: var(--text);
+    color: var(--bg);
+    font-size: 13px;
+    padding: 10px 18px;
+    border-radius: var(--radius);
+    transition: transform 0.2s ease;
+    z-index: 100;
+    pointer-events: none;
+    white-space: nowrap;
+    font-family: 'Geist Mono', monospace;
+  }
+
+  .toast.show { transform: translateX(-50%) translateY(0); }
+
+  @keyframes fadeIn {
+    from { opacity: 0; transform: translateY(6px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  .goal-card { animation: fadeIn 0.2s ease; }
+
+  .collapsed .task-list,
+  .collapsed .add-task-row,
+  .collapsed .goal-footer { display: none; }
+</style>
+</head>
+<body>
+
+<div class="page">
+  <div class="page-header">
+    <h1>Learning tracker</h1>
+    <p>Up to 3 goals · 3 weeks each · track what you're learning, building, and shipping</p>
+  </div>
+
+  <div class="summary-bar">
+    <div class="stat">
+      <div class="stat-label">goals active</div>
+      <div class="stat-value" id="stat-goals">0</div>
+      <div class="stat-sub">of 3 max</div>
+    </div>
+    <div class="stat">
+      <div class="stat-label">tasks done</div>
+      <div class="stat-value" id="stat-done">0</div>
+      <div class="stat-sub" id="stat-done-sub">of 0 total</div>
+    </div>
+    <div class="stat">
+      <div class="stat-label">completion</div>
+      <div class="stat-value" id="stat-pct">—</div>
+      <div class="stat-sub">overall progress</div>
+    </div>
+  </div>
+
+  <div id="goals-list" class="goals-list"></div>
+
+  <button class="add-goal-btn" id="add-goal-btn" onclick="addGoal()">
+    <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5">
+      <line x1="8" y1="2" x2="8" y2="14"/><line x1="2" y1="8" x2="14" y2="8"/>
+    </svg>
+    Add learning goal
+  </button>
+  <div class="limit-note" id="limit-note" style="display:none">3 goal limit reached — complete or remove a goal to add a new one</div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+const STORAGE_KEY = 'lt_v1';
+let state = { goals: [] };
+
+function load() {
+  try { const s = localStorage.getItem(STORAGE_KEY); if (s) state = JSON.parse(s); } catch(e) {}
+  if (!state.goals) state.goals = [];
+}
+
+function save() {
+  localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
+}
+
+function uid() {
+  return Math.random().toString(36).slice(2, 9);
+}
+
+function toast(msg) {
+  const el = document.getElementById('toast');
+  el.textContent = msg;
+  el.classList.add('show');
+  setTimeout(() => el.classList.remove('show'), 2200);
+}
+
+function daysLeft(deadline) {
+  if (!deadline) return null;
+  const now = new Date(); now.setHours(0,0,0,0);
+  const d = new Date(deadline); d.setHours(0,0,0,0);
+  return Math.round((d - now) / 86400000);
+}
+
+function maxDeadline() {
+  const d = new Date();
+  d.setDate(d.getDate() + 21);
+  return d.toISOString().split('T')[0];
+}
+
+function minDeadline() {
+  return new Date().toISOString().split('T')[0];
+}
+
+function deadlineLabel(deadline, allDone) {
+  if (!deadline) return { text: 'no deadline set', cls: '' };
+  const d = daysLeft(deadline);
+  if (allDone) return { text: 'completed', cls: 'done' };
+  if (d < 0) return { text: `${Math.abs(d)}d overdue`, cls: 'overdue' };
+  if (d === 0) return { text: 'due today', cls: 'urgent' };
+  if (d <= 3) return { text: `${d}d left`, cls: 'urgent' };
+  return { text: `${d}d left`, cls: '' };
+}
+
+function cycleType(goalId, taskId) {
+  const goal = state.goals.find(g => g.id === goalId);
+  const task = goal.tasks.find(t => t.id === taskId);
+  const types = ['learn', 'build', 'assess', 'cert'];
+  task.type = types[(types.indexOf(task.type) + 1) % types.length];
+  save(); render();
+}
+
+function toggleTask(goalId, taskId) {
+  const goal = state.goals.find(g => g.id === goalId);
+  const task = goal.tasks.find(t => t.id === taskId);
+  task.done = !task.done;
+  save(); render();
+}
+
+function deleteTask(goalId, taskId) {
+  const goal = state.goals.find(g => g.id === goalId);
+  goal.tasks = goal.tasks.filter(t => t.id !== taskId);
+  save(); render();
+}
+
+function deleteGoal(goalId) {
+  state.goals = state.goals.filter(g => g.id !== goalId);
+  save(); render();
+}
+
+function toggleCollapse(goalId) {
+  const goal = state.goals.find(g => g.id === goalId);
+  goal.collapsed = !goal.collapsed;
+  save(); render();
+}
+
+function addGoal() {
+  if (state.goals.length >= 3) { toast('3 goal limit reached'); return; }
+  const deadline = maxDeadline();
+  state.goals.push({ id: uid(), title: '', deadline, tasks: [], collapsed: false });
+  save(); render();
+  setTimeout(() => {
+    const inputs = document.querySelectorAll('.goal-title-input');
+    if (inputs.length) inputs[inputs.length - 1].focus();
+  }, 50);
+}
+
+function addTask(goalId) {
+  const input = document.getElementById(`new-task-${goalId}`);
+  const typeEl = document.querySelector(`[data-goal="${goalId}"] .type-pill.active`);
+  const text = input.value.trim();
+  if (!text) return;
+  const type = typeEl ? typeEl.dataset.t : 'learn';
+  const goal = state.goals.find(g => g.id === goalId);
+  goal.tasks.push({ id: uid(), text, type, done: false });
+  input.value = '';
+  save(); render();
+  setTimeout(() => document.getElementById(`new-task-${goalId}`)?.focus(), 30);
+}
+
+function updateGoalTitle(goalId, val) {
+  const goal = state.goals.find(g => g.id === goalId);
+  goal.title = val;
+  save();
+}
+
+function updateTaskText(goalId, taskId, val) {
+  const goal = state.goals.find(g => g.id === goalId);
+  const task = goal.tasks.find(t => t.id === taskId);
+  task.text = val;
+  save();
+}
+
+function updateDeadline(goalId, val) {
+  const goal = state.goals.find(g => g.id === goalId);
+  const max = maxDeadline();
+  if (val > max) { val = max; toast('max 3 weeks from today'); }
+  goal.deadline = val;
+  save(); render();
+}
+
+function selectType(goalId, type) {
+  document.querySelectorAll(`[data-goal="${goalId}"] .type-pill`).forEach(p => {
+    p.classList.toggle('active', p.dataset.t === type);
+  });
+}
+
+function renderWeekDots(deadline) {
+  if (!deadline) return '';
+  const total = 21;
+  const d = daysLeft(deadline);
+  const elapsed = Math.max(0, Math.min(total, total - d));
+  let dots = '';
+  for (let i = 0; i < total; i++) {
+    let cls = 'week-dot future';
+    if (i < elapsed) cls = 'week-dot past';
+    else if (i === elapsed) cls = 'week-dot current';
+    dots += `<div class="${cls}"></div>`;
+    if (i === 6 || i === 13) dots += `<span class="divider-label">·</span>`;
+  }
+  return `<div class="week-timeline">${dots}</div>`;
+}
+
+function render() {
+  const list = document.getElementById('goals-list');
+  const btn = document.getElementById('add-goal-btn');
+  const note = document.getElementById('limit-note');
+  const at3 = state.goals.length >= 3;
+  btn.disabled = at3;
+  note.style.display = at3 ? 'block' : 'none';
+
+  let totalDone = 0, totalTasks = 0;
+  state.goals.forEach(g => {
+    totalTasks += g.tasks.length;
+    totalDone += g.tasks.filter(t => t.done).length;
+  });
+
+  document.getElementById('stat-goals').textContent = state.goals.length;
+  document.getElementById('stat-done').textContent = totalDone;
+  document.getElementById('stat-done-sub').textContent = `of ${totalTasks} total`;
+  document.getElementById('stat-pct').textContent = totalTasks ? Math.round(totalDone / totalTasks * 100) + '%' : '—';
+
+  if (!state.goals.length) {
+    list.innerHTML = `<div class="empty-state"><strong>No goals yet</strong>Add up to 3 learning goals below.<br>Each goal can have tasks tagged as learn, build, assess, or cert.</div>`;
+    return;
+  }
+
+  list.innerHTML = state.goals.map(goal => {
+    const done = goal.tasks.filter(t => t.done).length;
+    const total = goal.tasks.length;
+    const pct = total ? Math.round(done / total * 100) : 0;
+    const allDone = total > 0 && done === total;
+    const dl = deadlineLabel(goal.deadline, allDone);
+    const d = daysLeft(goal.deadline);
+    const overdue = d !== null && d < 0 && !allDone;
+    const cardCls = allDone ? 'goal-card complete' : overdue ? 'goal-card overdue' : 'goal-card';
+    const collapsedCls = goal.collapsed ? ' collapsed' : '';
+
+    const tasks = goal.tasks.map(task => `
+      <div class="task-item">
+        <div class="task-checkbox ${task.done ? 'checked' : ''}" onclick="toggleTask('${goal.id}','${task.id}')">
+          <svg viewBox="0 0 10 10" fill="none" stroke="white" stroke-width="1.5">
+            <polyline points="1.5,5 4,7.5 8.5,2.5"/>
+          </svg>
+        </div>
+        <span class="task-type badge" data-t="${task.type}" onclick="cycleType('${goal.id}','${task.id}')" title="click to cycle type">${task.type}</span>
+        <input class="task-label-input ${task.done ? 'done' : ''}" value="${escHtml(task.text)}"
+          onblur="updateTaskText('${goal.id}','${task.id}',this.value)"
+          onkeydown="if(event.key==='Enter')this.blur()"
+          placeholder="task description">
+        <button class="task-delete" onclick="deleteTask('${goal.id}','${task.id}')" title="remove task">
+          <svg viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="1.5">
+            <line x1="2" y1="2" x2="12" y2="12"/><line x1="12" y1="2" x2="2" y2="12"/>
+          </svg>
+        </button>
+      </div>`).join('');
+
+    return `
+    <div class="${cardCls}${collapsedCls}" data-goal="${goal.id}">
+      <div class="goal-header">
+        <div class="goal-meta">
+          <div class="goal-title-row">
+            <input class="goal-title-input" value="${escHtml(goal.title)}"
+              placeholder="Name this goal…"
+              onblur="updateGoalTitle('${goal.id}',this.value)"
+              onkeydown="if(event.key==='Enter')this.blur()">
+            ${allDone ? `<span class="badge badge-green">done</span>` : overdue ? `<span class="badge badge-red">overdue</span>` : ''}
+          </div>
+          <div class="goal-info">
+            <span class="deadline-text ${dl.cls}">${dl.text}</span>
+            ${total > 0 ? `
+            <div class="progress-wrap">
+              <div class="progress-bar"><div class="progress-fill" style="width:${pct}%"></div></div>
+              <span class="progress-pct">${pct}%</span>
+            </div>` : ''}
+          </div>
+        </div>
+        <div class="goal-actions">
+          <button class="icon-btn" onclick="toggleCollapse('${goal.id}')" title="${goal.collapsed ? 'expand' : 'collapse'}">
+            <svg viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="1.5">
+              ${goal.collapsed
+                ? '<polyline points="3,5 7,9 11,5"/>'
+                : '<polyline points="3,9 7,5 11,9"/>'}
+            </svg>
+          </button>
+          <button class="icon-btn danger" onclick="deleteGoal('${goal.id}')" title="remove goal">
+            <svg viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="1.5">
+              <polyline points="2,4 12,4"/><path d="M5,4V3h4v1"/><path d="M3,4l1,8h6l1-8"/>
+            </svg>
+          </button>
+        </div>
+      </div>
+
+      <div class="task-list">${tasks}</div>
+
+      <div class="add-task-row">
+        <div class="task-checkbox" style="opacity:0.3;pointer-events:none">
+          <svg viewBox="0 0 10 10" fill="none" stroke="white" stroke-width="1.5">
+            <polyline points="1.5,5 4,7.5 8.5,2.5"/>
+          </svg>
+        </div>
+        <div class="type-selector">
+          <button class="type-pill active" data-t="learn" onclick="selectType('${goal.id}','learn')">learn</button>
+          <button class="type-pill" data-t="build" onclick="selectType('${goal.id}','build')">build</button>
+          <button class="type-pill" data-t="assess" onclick="selectType('${goal.id}','assess')">assess</button>
+          <button class="type-pill" data-t="cert" onclick="selectType('${goal.id}','cert')">cert</button>
+        </div>
+        <input class="add-task-input" id="new-task-${goal.id}" placeholder="Add a task…"
+          onkeydown="if(event.key==='Enter')addTask('${goal.id}')">
+        <button class="add-task-btn" onclick="addTask('${goal.id}')">+ add</button>
+      </div>
+
+      <div class="goal-footer">
+        <div class="deadline-picker">
+          <span class="deadline-label">deadline</span>
+          <input type="date" class="deadline-input"
+            value="${goal.deadline || ''}"
+            min="${minDeadline()}"
+            max="${maxDeadline()}"
+            onchange="updateDeadline('${goal.id}',this.value)">
+        </div>
+        <div style="display:flex;align-items:center;gap:12px">
+          ${renderWeekDots(goal.deadline)}
+          <span class="task-count">${done}/${total} tasks</span>
+        </div>
+      </div>
+    </div>`;
+  }).join('');
+}
+
+function escHtml(s) {
+  return (s || '').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+}
+
+load();
+render();
+</script>
+</body>
+</html>
